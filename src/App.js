@@ -13,6 +13,8 @@ class App extends Component {
     handStatus: 'live',
     handTotal: 0,
     dealerHand: [ newCard() ],
+    money: 10000,
+    wager: 100,
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -42,18 +44,21 @@ class App extends Component {
 
   runDealer = ()=> {
     const dealer = dealerStatus( this.state.dealerHand );
-    
+
     if( dealer.status === 'bust' ){
-      // player not bust wins
-      console.log('bust');
+      if( this.state.handStatus === 'blackjack' ) this.setState(state=> ({ money: state.money + 1.5 * state.wager })); 
+      else if( this.state.handStatus === 'bust' ) this.setState(state=> ({ money: state.money - state.wager }));
+      else if( this.state.handTotal < 21 ) this.setState(state=> ({ money: state.money + state.wager }));
       
     } else if( dealer.status === 'standing' ){
-      // check player hand total v dealer hand total => win/lose/push
-      console.log('standing');
+      if( this.state.handStatus === 'blackjack' ) this.setState(state=> ({ money: state.money + 1.5 * state.wager }));
+      else if( this.state.handStatus === 'bust' ) this.setState(state=> ({ money: state.money - state.wager }));
+      else if( this.state.handTotal > dealer.total ) this.setState(state=> ({ money: state.money + state.wager }));
+      else if( this.state.handTotal < dealer.total ) this.setState(state=> ({ money: state.money - state.wager }));
       
     } else if( dealer.status === 'blackjack' ){
-      // player not blackjack loses, unless you code insurance
-      console.log('dbj');
+      //  unless you code insurance
+      this.setState(state=> ({ money: state.money - state.wager }));
       
     } else if( dealer.status === 'hitting' ){
       this.setState(state => ({ dealerHand: state.dealerHand.concat( newCard() ) }), this.runDealer);
@@ -75,6 +80,9 @@ class App extends Component {
            <button key='hit' onClick={this.hit}>Hit me Jeeves</button>,
            <button key='stand' onClick={this.stand}>Stand</button>,
         ]}
+        <hr/>
+        <div className="PlayerMoney">Bank: ${this.state.money}</div>
+        <div className="PlayerWager">betting: ${this.state.wager}</div>
       </div>
     );
   }
