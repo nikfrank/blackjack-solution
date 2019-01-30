@@ -21,9 +21,9 @@ export const dealerStatus = cards=>{
   return {
     total, 
     status: (total > 21) ? 'bust' :
-            (hasAce && (total === 21)) ? 'blackjack' :
-            (hasAce && (total >= 18)) ? 'standing' : // dealer hits on soft 17 lo
-            (!hasAce && (total >= 17)) ? 'standing' :
+            (total === 21 && cardTotal === 11) ? 'blackjack' :
+            (total >= 18) ? 'standing' :
+            (cardTotal >= 17) ? 'standing' :
             'hitting',
   };
 }

@@ -17,6 +17,10 @@ class App extends Component {
     wager: 100,
   }
 
+  componentDidMount(){
+    this.nextHand();
+  }
+  
   componentDidUpdate(prevProps, prevState){
     if( ['bust', 'standing'].includes(this.state.handStatus) &&
         !['bust', 'standing'].includes(prevState.handStatus) )
@@ -66,6 +70,17 @@ class App extends Component {
     }
   }
 
+  nextHand = ()=> {
+    const cards = [ newCard(), newCard() ];
+    const hand = handStatus( cards );
+    
+    this.setState({
+      cards,
+      handStatus: hand.status,
+      handTotal: hand.total,
+      dealerHand: [ newCard() ],
+    })
+  }
   
   render() {
     return (
@@ -76,7 +91,9 @@ class App extends Component {
         <div className='hand'>
           <Hand cards={this.state.cards}/>
         </div>
-        {['bust', 'standing'].includes(this.state.handStatus) ? null : [
+        {['bust', 'standing'].includes(this.state.handStatus) ? (
+           <button onClick={this.nextHand}>Next</button>
+        ) : [
            <button key='hit' onClick={this.hit}>Hit me Jeeves</button>,
            <button key='stand' onClick={this.stand}>Stand</button>,
         ]}
