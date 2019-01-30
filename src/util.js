@@ -15,10 +15,11 @@ export const handStatus = cards => {
 
 export const dealerStatus = cards=>{
   const hasAce = !!cards.find(c => c.rank === 1);
-  const total = cards.reduce((p, c)=> p+ Math.min(10, c.rank), 0);
-
+  const cardTotal = cards.reduce((p, c)=> p+ Math.min(10, c.rank), 0);
+  const total = hasAce && cardTotal <= 11 ? cardTotal + 10 : cardTotal;
+        
   return {
-    total: hasAce && total <= 11 ? total + 10 : total,
+    total, 
     status: (total > 21) ? 'bust' :
             (hasAce && (total === 21)) ? 'blackjack' :
             (hasAce && (total >= 18)) ? 'standing' : // dealer hits on soft 17 lo
