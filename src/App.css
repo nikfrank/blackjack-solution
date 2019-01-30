@@ -30,3 +30,11 @@
     transform: rotate(360deg);
   }
 }
+
+.App .hand {
+  height: 30vh;
+}
+
+.App .hand svg {
+  height: 100%;
+}
