@@ -38,7 +38,9 @@ class App extends Component {
         <div className='hand'>
           <Hand cards={this.state.cards}/>
         </div>
-        <button onClick={this.hit}>Hit me Jeeves</button>
+        {this.state.handStatus === 'bust' ? null : (
+           <button onClick={this.hit}>Hit me Jeeves</button>
+        )}
       </div>
     );
   }
