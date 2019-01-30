@@ -19,6 +19,8 @@ class App extends Component {
     else this.dealCard();
   }
 
+  stand = ()=> this.setState({ handStatus: 'standing' })
+  
   dealCard = ()=>
     this.setState(state => {
       const nextCards = state.cards.concat(newCard());
@@ -38,9 +40,10 @@ class App extends Component {
         <div className='hand'>
           <Hand cards={this.state.cards}/>
         </div>
-        {this.state.handStatus === 'bust' ? null : (
-           <button onClick={this.hit}>Hit me Jeeves</button>
-        )}
+        {['bust', 'standing'].includes(this.state.handStatus) ? null : [
+        <button key='hit' onClick={this.hit}>Hit me Jeeves</button>,
+          <button key='stand' onClick={this.stand}>Stand</button>,
+        ]}
       </div>
     );
   }
