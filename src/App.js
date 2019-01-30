@@ -22,17 +22,26 @@ class App extends Component {
   }
   
   componentDidUpdate(prevProps, prevState){
-    if( ['bust', 'standing'].includes(this.state.handStatus) &&
-        !['bust', 'standing'].includes(prevState.handStatus) )
+    if(( ['bust', 'standing', 'blackjack'].includes(this.state.handStatus) &&
+         !['bust', 'standing', 'blackjack'].includes(prevState.handStatus)
+    ) || (
+      ( this.state.doubledDown && !prevState.doubledDown )
+    ))
       this.runDealer();
   }
   
   hit = ()=> {
     if( this.state.handStatus === 'bust' ) console.log('should remove the button on bust');
+    else if( this.state.doubledDown ) console.log('no hitting after doubleDown');
     else this.dealCard();
   }
 
   stand = ()=> this.setState({ handStatus: 'standing' })
+
+  doubleDown = ()=>{
+    if( this.state.handStatus === 'bust' ) console.log('should remove the button on bust');
+    else this.setState(state => ({ wager: state.wager * 2, doubledDown: true }), this.dealCard);
+  }
   
   dealCard = ()=>
     this.setState(state => {
@@ -71,14 +80,22 @@ class App extends Component {
   }
 
   nextHand = ()=> {
-    const cards = [ newCard(), newCard() ];
-    const hand = handStatus( cards );
-    
     this.setState({
-      cards,
-      handStatus: hand.status,
-      handTotal: hand.total,
-      dealerHand: [ newCard() ],
+      wager: 100,
+      doubledDown: false,
+      handStatus: 'live',
+      handTotal: 0,
+      
+    }, ()=> {
+      const cards = [ newCard(), newCard() ];
+      const hand = handStatus( cards );
+      
+      this.setState({
+        cards,
+        handStatus: hand.status,
+        handTotal: hand.total,
+        dealerHand: [ newCard() ],
+      })
     })
   }
   
@@ -91,11 +108,14 @@ class App extends Component {
         <div className='hand'>
           <Hand cards={this.state.cards}/>
         </div>
-        {['bust', 'standing'].includes(this.state.handStatus) ? (
+        {['bust', 'standing', 'blackjack'].includes(this.state.handStatus) || this.state.doubledDown ? (
            <button onClick={this.nextHand}>Next</button>
         ) : [
            <button key='hit' onClick={this.hit}>Hit me Jeeves</button>,
            <button key='stand' onClick={this.stand}>Stand</button>,
+           this.state.cards.length === 2 ? (
+             <button key='double-down' onClick={this.doubleDown}>Double Down</button>
+           ) : null,
         ]}
         <hr/>
         <div className="PlayerMoney">Bank: ${this.state.money}</div>
