@@ -12,6 +12,7 @@ class App extends Component {
     cards: [],
     handStatus: 'live',
     handTotal: 0,
+    dealerHand: [ newCard() ],
   }
 
   hit = ()=> {
@@ -37,12 +38,15 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <div className='hand dealer'>
+          <Hand cards={this.state.dealerHand}/>
+        </div>
         <div className='hand'>
           <Hand cards={this.state.cards}/>
         </div>
         {['bust', 'standing'].includes(this.state.handStatus) ? null : [
-        <button key='hit' onClick={this.hit}>Hit me Jeeves</button>,
-          <button key='stand' onClick={this.stand}>Stand</button>,
+           <button key='hit' onClick={this.hit}>Hit me Jeeves</button>,
+           <button key='stand' onClick={this.stand}>Stand</button>,
         ]}
       </div>
     );

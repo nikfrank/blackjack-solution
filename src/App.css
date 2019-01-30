@@ -38,3 +38,7 @@
 .App .hand svg {
   height: 100%;
 }
+
+.dealer {
+  background-color: green;
+}
